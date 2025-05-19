@@ -36,4 +36,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"/>
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Полив выключен"
+        android:textSize="20sp"
+        android:textColor="#333333"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Старт полива"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:id="@+id/humidityTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Текущая влажность: 47%"
+        android:textSize="18sp"
+        android:layout_marginBottom="16dp"/>
 </LinearLayout>
