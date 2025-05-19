@@ -16,7 +16,7 @@ class IrrigationViewModel : ViewModel() {
     private val api = retrofit.create(IrrigationApi::class.java)
 
     val moisture = MutableLiveData<String>("Загрузка...")
-
+    val wateringStatus = MutableLiveData<Boolean>(false)
     fun refreshMoisture() {
         viewModelScope.launch {
             try {
@@ -35,7 +35,26 @@ class IrrigationViewModel : ViewModel() {
             }
         }
     }
-
+    fun refreshStatus() {
+        viewModelScope.launch {
+            try {
+                val status = api.getStatus()
+                if (status.isSuccessful) {
+                    val data = status.body()
+                    moisture.value = data?.moisture?.toString() ?: "?"
+                    wateringStatus.value = data?.watering ?: false
+                }
+            } catch (_: Exception) {}
+        }
+    }
+    fun toggleWatering() {
+        viewModelScope.launch {
+            try {
+                val result = api.toggleWatering()
+                wateringStatus.value = result.body()?.watering ?: false
+            } catch (_: Exception) {}
+        }
+    }
     fun setThreshold(value: String) {
         viewModelScope.launch {
             try {
