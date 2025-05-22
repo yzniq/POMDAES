@@ -1,5 +1,5 @@
 import os
-from bottle import Bottle, template, request, run
+from bottle import Bottle, template, request, response, run
 from gpiozero import MCP3008, OutputDevice
 import time
 
@@ -45,7 +45,29 @@ def set_threshold():
     except ValueError:
         pass
     control_irrigation(threshold)
-    return template("index.html", moisture=read_soil_moisture(), threshold=threshold * 100)
+    response.content_type = 'application/json'
+    return {"moisture": read_soil_moisture(), "threshold": threshold * 100}
+
+@app.route("/api/status")
+def api_status():
+    moisture_percent = read_soil_moisture()
+    is_watering = relay.value == 1 #включен ли полив
+    response.content_type = 'application/json'
+    return {
+        "moisture": moisture_percent,#влажность
+        "watering": is_watering, #статус полива
+        "threshold": threshold * 100 #прог влажности в процентах
+    }
+
+@app.route("/api/toggle", method="POST")#обработчик переключения полива
+def api_toggle():
+    is_on = relay.value == 1 #текущее состояние реле
+    if is_on:
+        relay.off()
+    else:
+        relay.on()
+    response.content_type = 'application/json'
+    return {"watering": relay.value == 1}
 
 if __name__ == "__main__":
     run(app, host='0.0.0.0', port=8080)
